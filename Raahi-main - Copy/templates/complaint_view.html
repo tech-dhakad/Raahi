@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Complaint Submitted - Raahi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f6f9fc;
+            --surface: #ffffff;
+            --accent: #0b76ff;
+            --success: #22c55e;
+            --muted: #6b7280;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 90%;
+            background: var(--surface);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: var(--success);
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h3 {
+            border-bottom: 2px solid #f0f4f8;
+            padding-bottom: 8px;
+            margin-top: 30px;
+            color: #0f2138;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+
+        .proof-box {
+            background: #eef2f8;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+
+        .proof-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .proof-label {
+            font-weight: 700;
+            color: #334155;
+            width: 30%;
+        }
+
+        .proof-value {
+            width: 65%;
+            font-family: monospace;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            color: #0f2138;
+            cursor: pointer;
+        }
+        
+        .proof-value:hover {
+            text-decoration: underline;
+        }
+
+        .ai-draft pre {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-size: 14px;
+            color: #475569;
+        }
+        
+        .note {
+            margin-top: 30px;
+            padding: 15px;
+            background: #fffbe6;
+            border: 1px solid #fde047;
+            color: #78350f;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .data-table th, .data-table td {
+            text-align: left;
+            padding: 10px 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        
+        .data-table th {
+            font-weight: 700;
+            color: var(--muted);
+            width: 35%;
+        }
+
+        .rating-section {
+            margin-top: 32px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .stars {
+            display: inline-flex;
+            gap: 6px;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .star {
+            color: #d1d5db;
+            transition: color 0.15s ease, transform 0.15s ease;
+        }
+
+        .star.active {
+            color: #f59e0b;
+            transform: translateY(-1px);
+        }
+
+        .rating-label {
+            font-size: 14px;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+
+        .rating-status {
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .rating-status.ok {
+            color: var(--success);
+        }
+
+        .rating-status.err {
+            color: var(--danger);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>✅ Complaint Filed Successfully</h2>
+        <p>Thank you for submitting your report. Your complaint has been assigned the ID **{{ data.id }}** and has been forwarded to the appropriate team via email.</p>
+
+        <h3>📝 Report Details</h3>
+        <table class="data-table">
+            <tr>
+                <th>Complaint ID</th>
+                <td>{{ data.id }}</td>
+            </tr>
+            <tr>
+                <th>Reported By</th>
+                <td>{{ data.fields.name }} ({{ data.fields.email }})</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ data.fields.type | replace('_', ' ') | title }}</td>
+            </tr>
+            <tr>
+                <th>Country</th>
+                <td>{{ data.fields.country }}</td>
+            </tr>
+            <tr>
+                <th>Attachments</th>
+                <td>{{ data.attachments | length }} file(s)</td>
+            </tr>
+        </table>
+        
+        <h3>🤖 AI Generated Draft Email</h3>
+        <p style="font-size:14px;color:var(--muted)">This draft was sent to our investigation team for swift processing.</p>
+        <div class="ai-draft">
+            <pre>Subject: {{ data.ai_subject }}
+
+{{ data.ai_draft }}
+            </pre>
+        </div>
+
+        {% if data.ai_suggestions %}
+        <h3>💡 AI Suggestions for You</h3>
+        <p style="font-size:14px;color:var(--muted)">Kuch practical steps jo aap is issue ke baare me khud le sakte hain:</p>
+        <div class="ai-draft">
+            <pre>{{ data.ai_suggestions }}</pre>
+        </div>
+        {% endif %}
+
+        <div class="rating-section">
+            <div class="section-title">⭐ Rate the outcome</div>
+            <p style="font-size:14px;color:var(--muted);margin-bottom:10px;">
+                Kya aapki complaint se kuch action hua? Please rate your experience.
+            </p>
+            <div class="stars" id="rating-stars" aria-label="Rate complaint outcome from 1 to 5 stars">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
+            </div>
+            <div class="rating-label" id="rating-label">Select stars: 1 = no help, 5 = fully resolved</div>
+            <div class="rating-status" id="rating-status"></div>
+        </div>
+        
+    </div>
+
+    <script>
+        (function() {
+            const stars = document.querySelectorAll('.star');
+            const label = document.getElementById('rating-label');
+            const status = document.getElementById('rating-status');
+            const cid = "{{ data.id }}";
+
+            const messages = {
+                1: "Very poor – issue bilkul solve nahi hua.",
+                2: "Poor – thoda response aaya, par problem zyada solve nahi hui.",
+                3: "Average – kuch improvement hua, par abhi bhi kaam baaki hai.",
+                4: "Good – kaafi had tak problem solve ho gayi.",
+                5: "Excellent – issue completely resolve ho gaya."
+            };
+
+            function setActive(rating) {
+                stars.forEach(star => {
+                    const v = parseInt(star.dataset.value, 10);
+                    if (v <= rating) {
+                        star.classList.add('active');
+                    } else {
+                        star.classList.remove('active');
+                    }
+                });
+                label.textContent = messages[rating] || "Select stars: 1 = no help, 5 = fully resolved";
+            }
+
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const rating = parseInt(star.dataset.value, 10);
+                    setActive(rating);
+                    status.textContent = "Saving your feedback...";
+                    status.className = "rating-status";
+
+                    fetch(`/api/complaint_rating/${cid}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            rating: rating,
+                            status: rating >= 4 ? "resolved" : "not_resolved"
+                        })
+                    })
+                    .then(r => r.json().then(j => ({ ok: r.ok, status: r.status, body: j })))
+                    .then(res => {
+                        if (res.ok && res.body && res.body.ok) {
+                            status.textContent = "Thank you! Aapka feedback record ho gaya hai.";
+                            status.className = "rating-status ok";
+                        } else {
+                            throw new Error(res.body?.error || "Could not save rating.");
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        status.textContent = "Rating save nahi ho paayi. Thodi der baad dobara try karein.";
+                        status.className = "rating-status err";
+                    });
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
